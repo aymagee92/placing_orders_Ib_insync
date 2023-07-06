@@ -1,0 +1,53 @@
+from ib_insync import *
+import random
+
+# --- CONNECTING TO INTERACTIVE BROKERS ---
+print("\nConnecting to Interactive Brokers...")
+ib = IB()
+ib.connect('127.0.0.1', 7496, clientId=random.randint(1,99))
+
+def buyStock():
+        action = Order(
+                action = 'buy',
+                totalQuantity = 1,
+                orderType = 'LMT',
+                lmtPrice = data.ask,
+                tif = 'GTC',
+                outsideRth = True
+        )
+
+        order = ib.placeOrder(stock,action)
+
+def sellStock():
+        action = Order(
+                action = 'sell',
+                totalQuantity = 1,
+                orderType = 'LMT',
+                lmtPrice = data.bid,
+                tif = 'GTC',
+                outsideRth = True
+        )
+        
+        order = ib.placeOrder(stock,action)
+
+
+stock = Stock(
+        symbol = 'TSLA',
+        exchange = 'SMART/AMEX',
+        currency = 'USD'
+)
+
+data = ib.reqMktData(
+        contract = stock,
+        genericTickList='',
+        snapshot = False,
+        regulatorySnapshot= False
+)
+
+ib.sleep(1)
+
+buyStock()
+
+ib.sleep(15)
+
+sellStock()
